@@ -1,7 +1,7 @@
 from sensor.entity import artifact_entity,config_entity
 from sensor.logger import logging
 from sensor.exception import SensorException
-import os
+import os,sys
 from scipy.stats import ks_2samp
 import pandas as pd 
 from typing import Optional
