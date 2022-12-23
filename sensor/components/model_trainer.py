@@ -42,6 +42,22 @@ class ModelTrainer:
             f1_test_score=f1_score(y_true=y_test,y_pred=yhat_testy)
             
             # check for overfitting or underfitting or expected score
-            
+            if f1_test_score<self.model_trainer_config.expected_score:
+                raise exception(f"Model is not good as it is not able to give \
+                expected accuracy:{self.model_trainer_config.expected_score}:model actual score:{f1_test_score}")
+
+            diff= abs(f1_train_score-f1_test_score)
+
+            if diff>self.model_trainer_config.overfitting_threshols:
+                raise Exception(f"Train and test score diff:{diff} is more than overfitting threshold {self.model_trainer_config.overfitting_threshold}")
+
+            # Save the trained model
+            utils.save_object(file_path=self.model_trainer_config.model_path, obj=model) 
+
+            # Prepare artifact
+            model_trainer_artifact = artifact_entity.ModelTrainerArtifact(model_path=self.model_trainer_config.model_path,
+            f1_train_score=f1_train_score,f1_test_score=f1_test_score)
+            logging.info(f"model trainer artifact:{model_trainer_artifact}")
+            return model_trainer_artifact
         except Exception as e:
             raise e
